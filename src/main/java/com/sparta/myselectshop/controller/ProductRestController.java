@@ -29,7 +29,7 @@ public class ProductRestController {
         return productRepository.save(product);
     }
 
-    @PutMapping("/api/product/{id}")
+    @PutMapping("/api/products/{id}")
     public Long update(@PathVariable Long id, @RequestBody ProductMypriceRequestDto requestDto) {
         return productService.update(id, requestDto);
     }
