@@ -5,6 +5,7 @@ import com.sparta.myselectshop.domain.user.User;
 import com.sparta.myselectshop.domain.user.UserRepository;
 import com.sparta.myselectshop.domain.user.UserRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,13 +16,16 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private static final String ADMIN_TOKEN = "AAABnv/xRVklrnYxKZ0aHgTBcXukeZygoC";
 
     @Transactional
     public void registerUser(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
-        String password = requestDto.getPassword();
+        String encPassword = requestDto.getPassword();
+
+        String password = bCryptPasswordEncoder.encode(encPassword);
 
         // 회원 ID 중복확인
         Optional<User> findUser = userRepository.findByUsername(username);
