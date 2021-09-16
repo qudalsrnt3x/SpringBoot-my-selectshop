@@ -1,0 +1,18 @@
+package com.sparta.myselectshop.controller;
+
+import com.sparta.myselectshop.security.UserDetailsImpl;
+import lombok.Getter;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HomeController {
+
+    @GetMapping("/")
+    public String home(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        model.addAttribute("username", userDetails.getUsername());
+        return "/index";
+    }
+}
