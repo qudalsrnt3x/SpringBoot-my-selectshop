@@ -16,7 +16,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-
 public class ProductRestController {
 
     private final ProductRepository productRepository;
