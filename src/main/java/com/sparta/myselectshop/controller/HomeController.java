@@ -2,6 +2,7 @@ package com.sparta.myselectshop.controller;
 
 import com.sparta.myselectshop.security.UserDetailsImpl;
 import lombok.Getter;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ public class HomeController {
         return "/index";
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/admin")
     public String admin(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         model.addAttribute("username", userDetails.getUsername());

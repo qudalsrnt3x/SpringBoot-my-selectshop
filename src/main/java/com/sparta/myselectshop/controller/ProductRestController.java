@@ -8,6 +8,7 @@ import com.sparta.myselectshop.domain.user.User;
 import com.sparta.myselectshop.security.UserDetailsImpl;
 import com.sparta.myselectshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,9 @@ public class ProductRestController {
         return productRepository.findAllByUserId(userId);
     }
 
+
     // 상품 조회 (관리자)
+    @Secured("ROLE_ADMIN")
     @GetMapping("/api/admin/products")
     public List<Product> getAllProducts() {
         return productRepository.findAll();

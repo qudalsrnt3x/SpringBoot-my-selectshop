@@ -2,11 +2,13 @@ package com.sparta.myselectshop.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+@EnableGlobalMethodSecurity(securedEnabled = true)
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -22,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().disable();
 
         http.authorizeRequests()
-                .antMatchers("/css/**","/images/**", "/h2-console/**", "/user/**").permitAll()
+                .antMatchers("/css/**", "/images/**", "/h2-console/**", "/user/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
@@ -37,6 +39,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .logout()
                 .logoutUrl("/user/logout")
-                .permitAll();
+                .permitAll()
+
+                .and()
+
+                .exceptionHandling()
+                .accessDeniedPage("/user/forbidden");
+
     }
 }
