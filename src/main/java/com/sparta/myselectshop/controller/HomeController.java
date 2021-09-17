@@ -15,4 +15,11 @@ public class HomeController {
         model.addAttribute("username", userDetails.getUsername());
         return "/index";
     }
+
+    @GetMapping("/admin")
+    public String admin(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        model.addAttribute("username", userDetails.getUsername());
+        model.addAttribute("admin", true);
+        return "/index";
+    }
 }
