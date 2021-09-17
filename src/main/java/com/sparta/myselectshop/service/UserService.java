@@ -4,6 +4,7 @@ import com.sparta.myselectshop.domain.user.SignupRequestDto;
 import com.sparta.myselectshop.domain.user.User;
 import com.sparta.myselectshop.domain.user.UserRepository;
 import com.sparta.myselectshop.domain.user.UserRole;
+import com.sparta.myselectshop.security.UserDetailsImpl;
 import com.sparta.myselectshop.security.kakao.KakaoOAuth2;
 import com.sparta.myselectshop.security.kakao.KakaoUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -65,30 +66,44 @@ public class UserService {
         String nickname = userInfo.getNickname();
         String email = userInfo.getEmail();
 
-        // userDb에 넣을 username, password 설정
-        // 회원 Id = 카카오 nickname
-        String username = nickname;
-        // 패스워드 = 카카오 Id + ADMIN TOKEN
-        String password = kakaoId + ADMIN_TOKEN;
+
 
         // db에 중복된 kakaoId가 있는지 확인
         User kakaoUser = userRepository.findByKakaoId(kakaoId).orElse(null);
 
         // 카카오 정보로 회원가입
         if (kakaoUser == null) {
-            // 패스워드 인코딩
-            String encodedPassword = bCryptPasswordEncoder.encode(password);
-            // ROLE = 사용자
-            UserRole role = UserRole.USER;
+            // 카카오 이메일과 동일한 이메일을 가진 회원이 있는지 확인
+            User sameEmailUser = userRepository.findByEmail(email).orElse(null);
 
-            kakaoUser = new User(nickname, encodedPassword, email, role, kakaoId);
+            if (sameEmailUser != null) {
+                kakaoUser = sameEmailUser;
+                // 카카오 이메일과 동일한 이메일 회원이 있는 경우
+                // 카카오 Id 를 회원정보에 저장
+                kakaoUser.setKakaoId(kakaoId);
+                userRepository.save(kakaoUser);
+            } else {
+                // userDb에 넣을 username, password 설정
+                // 회원 Id = 카카오 nickname
+                String username = nickname;
+                // 패스워드 = 카카오 Id + ADMIN TOKEN
+                String password = kakaoId + ADMIN_TOKEN;
+                // 패스워드 인코딩
+                String encodedPassword = bCryptPasswordEncoder.encode(password);
+                // ROLE = 사용자
+                UserRole role = UserRole.USER;
 
-            userRepository.save(kakaoUser);
+                kakaoUser = new User(username, encodedPassword, email, role, kakaoId);
+
+                userRepository.save(kakaoUser);
+            }
+
+
         }
 
         // 로그인 처리
-        Authentication kakaoUsernamePassword = new UsernamePasswordAuthenticationToken(username, password);
-        Authentication authentication = authenticationManager.authenticate(kakaoUsernamePassword);
+        UserDetailsImpl userDetails = new UserDetailsImpl(kakaoUser);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
