@@ -1,6 +1,7 @@
 package com.sparta.myselectshop.security;
 
 import com.sparta.myselectshop.domain.user.User;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+@Getter
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails{
 

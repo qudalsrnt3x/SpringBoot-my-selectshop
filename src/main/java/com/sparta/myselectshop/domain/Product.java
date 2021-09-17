@@ -34,11 +34,15 @@ public class Product extends Timestamped {
     @Column(nullable = false)
     private int myprice;
 
+    @Column(nullable = false)
+    private Long userId;
+
     public void update(ProductMypriceRequestDto requestDto) {
         this.myprice = requestDto.getMyprice();
     }
 
-    public Product(ProductRequestDto requestDto) {
+    public Product(ProductRequestDto requestDto, Long userId) {
+        this.userId = userId;
         this.title = requestDto.getTitle();
         this.image = requestDto.getImage();
         this.link = requestDto.getLink();
