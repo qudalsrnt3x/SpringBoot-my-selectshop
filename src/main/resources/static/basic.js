@@ -29,7 +29,12 @@ $(document).ready(function () {
     $('#see-area').show();
     $('#search-area').hide();
 
-    showProduct();
+    //showProduct();
+    if ($('#admin').length === 1) {
+        showProduct(true);
+    } else {
+        showProduct();
+    }
 })
 
 function numberWithCommas(x) {
@@ -116,7 +121,7 @@ function addProduct(itemDto) {
     // 2. 응답 함수에서 modal을 뜨게 하고, targetId 를 reponse.id 로 설정 (숙제로 myprice 설정하기 위함)
 }
 
-function showProduct() {
+function showProduct(isAdmin = false) {
     /**
      * 관심상품 목록: #product-container
      * 검색결과 목록: #search-result-box
@@ -124,7 +129,7 @@ function showProduct() {
      */
     // 1. GET /api/products 요청
     $.ajax({
-        url: '/api/products',
+        url: isAdmin ? '/api/admin/products' : '/api/products',
         type:'GET',
         success: function (response) {
             $('#product-container').empty();
