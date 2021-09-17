@@ -21,10 +21,17 @@ public class ProductRestController {
     private final ProductRepository productRepository;
     private final ProductService productService;
 
+    // 상품 조회 (사용자)
     @GetMapping("/api/products")
     public List<Product> getProducts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long userId = userDetails.getUser().getId();
         return productRepository.findAllByUserId(userId);
+    }
+
+    // 상품 조회 (관리자)
+    @GetMapping("/api/admin/products")
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
     // 신규 상품 등록
