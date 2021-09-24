@@ -29,6 +29,12 @@ public class Product extends Timestamped {
     private String mallName;
 
     @Column(nullable = false)
+    private String category1;
+
+    @Column(nullable = false)
+    private String category2;
+
+    @Column(nullable = false)
     private int lprice;
 
     @Column(nullable = false)
@@ -47,6 +53,8 @@ public class Product extends Timestamped {
         this.image = requestDto.getImage();
         this.link = requestDto.getLink();
         this.mallName = requestDto.getMallName();
+        this.category1 = requestDto.getCategory1();
+        this.category2 = requestDto.getCategory2();
         this.lprice = requestDto.getLprice();
         this.myprice = 0;
     }

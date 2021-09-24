@@ -12,6 +12,8 @@ public class ItemDto {
     private String link;
     private String image;
     private String mallName;
+    private String category1;
+    private String category2;
     private int lprice;
 
     public ItemDto(JSONObject jsonObject) {
@@ -19,6 +21,8 @@ public class ItemDto {
         this.image = jsonObject.getString("image");
         this.link = jsonObject.getString("link");
         this.mallName = jsonObject.getString("mallName");
+        this.category1 = jsonObject.getString("category1");
+        this.category2 = jsonObject.getString("category2");
         this.lprice = jsonObject.getInt("lprice");
     }
 }

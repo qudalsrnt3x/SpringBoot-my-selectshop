@@ -41,6 +41,19 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function textLengthOverCut(txt, len, lastTxt) {
+    if (len === "" || len == null) { // 기본값
+        len = 40;
+    }
+    if (lastTxt === "" || lastTxt == null) { // 기본값
+        lastTxt = "...";
+    }
+    if (txt.length > len) {
+        txt = txt.substr(0, len) + lastTxt;
+    }
+    return txt;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 ///// 여기 아래에서부터 코드를 작성합니다. ////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +64,7 @@ function execSearch() {
      * 검색결과 목록: #search-result-box
      * 검색결과 HTML 만드는 함수: addHTML
      */
-    // 1. 검색창의 입력값을 가져온다.
+        // 1. 검색창의 입력값을 가져온다.
     let query = $('#query').val();
     // 2. 검색창 입력값을 검사하고, 입력하지 않았을 경우 focus.
     if (query === '') {
@@ -83,21 +96,29 @@ function addHTML(itemDto) {
      * image, title, lprice, addProduct 활용하기
      * 참고) onclick='addProduct(${JSON.stringify(itemDto)})'
      */
-    return `<div class="search-itemDto">
-            <div class="search-itemDto-left">
-                <img src="${itemDto.image}" alt="">
-            </div>
-            <div class="search-itemDto-center">
-                <div>${itemDto.title}</div>
-                <div class="price">
-                    ${numberWithCommas(itemDto.lprice)}
-                    <span class="unit">원</span>
-                </div>
-            </div>
-            <div class="search-itemDto-right">
-                <img src="images/icon-save.png" alt="" onclick='addProduct(${JSON.stringify(itemDto)})'>
-            </div>
-        </div>`
+    return `<div class="col-lg-4 col-md-6">
+                <div class="blog__item">
+                      <div class="blog__item__pic">
+                            <img src="${itemDto.image}" alt="" height="204px">
+                        </div>
+                        <div class="blog__item__text">
+                            <ul class="blog__item__tags">
+                                <li><i class="fa fa-tags"></i> ${itemDto.category1}</li>
+                                <li>${itemDto.category2}</li>
+                            </ul>
+                            <h5><a href="javascript:void(0)">${textLengthOverCut(itemDto.title)}</a></h5>
+                            <ul class="blog__item__widget">
+                                <li style="color: #f03250; font-weight: 700;"><i class="fa fa-won"></i>
+                                    ${numberWithCommas(itemDto.lprice)}
+                                </li>
+                                <li onclick='addProduct(${JSON.stringify(itemDto)})'>
+                                    <i class="fa fa-check"></i> 관심 상품 등록
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>`
+
 }
 
 function addProduct(itemDto) {
@@ -130,7 +151,7 @@ function showProduct(isAdmin = false) {
     // 1. GET /api/products 요청
     $.ajax({
         url: isAdmin ? '/api/admin/products' : '/api/products',
-        type:'GET',
+        type: 'GET',
         success: function (response) {
             $('#product-container').empty();
             $('#search-result-box').empty();
@@ -160,7 +181,7 @@ function addProductItem(product) {
                 <div class="lprice">
                     <span>${numberWithCommas(product.lprice)}</span>원
                 </div>
-                <div class="isgood ${product.lprice > product.myprice ? 'none':''}">
+                <div class="isgood ${product.lprice > product.myprice ? 'none' : ''}">
                     최저가
                 </div>
             </div>
@@ -192,7 +213,7 @@ function setMyprice() {
         url: `/api/products/${targetId}`,
         type: 'PUT',
         contentType: 'application/json',
-        data: JSON.stringify({'myprice':myprice}),
+        data: JSON.stringify({'myprice': myprice}),
         success: function (response) {
             $('#container').removeClass('active');
             alert("최저가가 등록되었습니다.");
