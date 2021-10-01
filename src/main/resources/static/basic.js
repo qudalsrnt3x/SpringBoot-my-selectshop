@@ -43,7 +43,7 @@ function numberWithCommas(x) {
 
 function textLengthOverCut(txt, len, lastTxt) {
     if (len === "" || len == null) { // 기본값
-        len = 40;
+        len = 30;
     }
     if (lastTxt === "" || lastTxt == null) { // 기본값
         lastTxt = "...";
@@ -79,12 +79,20 @@ function execSearch() {
         success: function (response) {
             $('#search-result-box').empty();
 
+            /** 동적으로 스크롤 이동하기 */
+            // 선택한 태그의 위치 반환
+            let offset = $('.news-post').offset();
+
+            // 해당 위치로 스크롤 이동, 0.4초
+            $('html, body').animate({scrollTop : offset.top}, 400);
+
             // 4. for 문마다 itemDto를 꺼내서 HTML 만들고 검색결과 목록에 붙이기!
             for (let i = 0; i < response.length; i++) {
                 let itemDto = response[i];
                 let tmpHtml = addHTML(itemDto);
                 $('#search-result-box').append(tmpHtml);
             }
+
         }
     })
 
@@ -108,11 +116,13 @@ function addHTML(itemDto) {
                             </ul>
                             <h5><a href="javascript:void(0)">${textLengthOverCut(itemDto.title)}</a></h5>
                             <ul class="blog__item__widget">
-                                <li style="color: #f03250; font-weight: 700;"><i class="fa fa-won"></i>
+                                <li style="color: #f03250; font-weight: 700;margin-right: 60px;"><i class="fa fa-won"></i>
                                     ${numberWithCommas(itemDto.lprice)}
                                 </li>
-                                <li onclick='addProduct(${JSON.stringify(itemDto)})'>
-                                    <i class="fa fa-check"></i> 관심 상품 등록
+                                <li>
+                                 <a href="javascript:void(0)" 
+                                 onclick='addProduct(${JSON.stringify(itemDto)})'>
+                                    <i class="fa fa-check"></i> 관심 상품 등록</a>
                                 </li>
                             </ul>
                         </div>
